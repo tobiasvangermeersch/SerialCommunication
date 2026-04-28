@@ -190,6 +190,7 @@
             this.tabPageInstellingen.TabIndex = 2;
             this.tabPageInstellingen.Text = "Instellingen";
             this.tabPageInstellingen.UseVisualStyleBackColor = true;
+            this.tabPageInstellingen.Click += new System.EventHandler(this.tabPageInstellingen_Click);
             // 
             // checkBoxDtrEnable
             // 

@@ -56,5 +56,10 @@ namespace SerialCommunication
         {
             // abc def ghi jkl
         }
+
+        private void tabPageInstellingen_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
