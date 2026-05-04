@@ -122,5 +122,68 @@ namespace SerialCommunication
         {
 
         }
+
+        private void checkBoxDigital2_Checked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    MessageBox.Show("Geen open seriële verbinding.", "Verbindingsfout");
+                    checkBoxDigital2.Checked = false;
+                    return;
+                }
+
+                string command = checkBoxDigital2.Checked ? "set d2 high" : "set d2 low";
+                serialPortArduino.WriteLine(command);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
+                checkBoxDigital2.Checked = false;
+            }
+        }
+
+        private void checkBoxDigital3_Checked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    MessageBox.Show("Geen open seriële verbinding.", "Verbindingsfout");
+                    checkBoxDigital3.Checked = false;
+                    return;
+                }
+
+                string command = checkBoxDigital3.Checked ? "set d3 high" : "set d3 low";
+                serialPortArduino.WriteLine(command);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
+                checkBoxDigital3.Checked = false;
+            }
+        }
+
+        private void checkBoxDigital4_Checked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    MessageBox.Show("Geen open seriële verbinding.", "Verbindingsfout");
+                    checkBoxDigital4.Checked = false;
+                    return;
+                }
+
+                string command = checkBoxDigital4.Checked ? "set d4 high" : "set d4 low";
+                serialPortArduino.WriteLine(command);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
+                checkBoxDigital4.Checked = false;
+            }
+        }
     }
 }
