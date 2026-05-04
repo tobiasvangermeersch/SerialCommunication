@@ -185,5 +185,62 @@ namespace SerialCommunication
                 checkBoxDigital4.Checked = false;
             }
         }
+
+        private void trackBarPWM9_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    MessageBox.Show("Geen open seriële verbinding.", "Verbindingsfout");
+                    return;
+                }
+
+                string command = "set pwm9 " + trackBarPWM9.Value.ToString();
+                serialPortArduino.WriteLine(command);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
+            }
+        }
+
+        private void trackBarPWM10_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    MessageBox.Show("Geen open seriële verbinding.", "Verbindingsfout");
+                    return;
+                }
+
+                string command = "set pwm10 " + trackBarPWM10.Value.ToString();
+                serialPortArduino.WriteLine(command);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
+            }
+        }
+
+        private void trackBarPWM11_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    MessageBox.Show("Geen open seriële verbinding.", "Verbindingsfout");
+                    return;
+                }
+
+                string command = "set pwm11 " + trackBarPWM11.Value.ToString();
+                serialPortArduino.WriteLine(command);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
+            }
+        }
     }
 }

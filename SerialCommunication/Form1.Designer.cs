@@ -574,7 +574,7 @@
             this.label3.Text = "PWM 11";
             // 
             // trackBarPWM11
-            // 
+            //
             this.trackBarPWM11.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.trackBarPWM11.Location = new System.Drawing.Point(480, 332);
             this.trackBarPWM11.Maximum = 255;
@@ -582,6 +582,7 @@
             this.trackBarPWM11.Size = new System.Drawing.Size(247, 45);
             this.trackBarPWM11.TabIndex = 4;
             this.trackBarPWM11.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarPWM11.Scroll += new System.EventHandler(this.trackBarPWM11_Scroll);
             // 
             // label2
             // 
@@ -593,7 +594,7 @@
             this.label2.Text = "PWM 10";
             // 
             // trackBarPWM10
-            // 
+            //
             this.trackBarPWM10.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.trackBarPWM10.Location = new System.Drawing.Point(480, 295);
             this.trackBarPWM10.Maximum = 255;
@@ -601,6 +602,7 @@
             this.trackBarPWM10.Size = new System.Drawing.Size(247, 45);
             this.trackBarPWM10.TabIndex = 2;
             this.trackBarPWM10.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarPWM10.Scroll += new System.EventHandler(this.trackBarPWM10_Scroll);
             // 
             // label1
             // 
@@ -612,7 +614,7 @@
             this.label1.Text = "PWM 9";
             // 
             // trackBarPWM9
-            // 
+            //
             this.trackBarPWM9.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.trackBarPWM9.Location = new System.Drawing.Point(480, 257);
             this.trackBarPWM9.Maximum = 255;
@@ -620,6 +622,7 @@
             this.trackBarPWM9.Size = new System.Drawing.Size(247, 45);
             this.trackBarPWM9.TabIndex = 0;
             this.trackBarPWM9.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarPWM9.Scroll += new System.EventHandler(this.trackBarPWM9_Scroll);
             // 
             // pictureBox2
             // 
