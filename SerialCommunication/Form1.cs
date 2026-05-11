@@ -15,6 +15,7 @@ namespace SerialCommunication
     public partial class Form1 : Form
     {
         private SerialPort serialPortArduino;
+        private System.Windows.Forms.Timer timerOefening4;
 
         public Form1()
         {
@@ -22,6 +23,12 @@ namespace SerialCommunication
             serialPortArduino = new SerialPort();
             serialPortArduino.ReadTimeout = 1000;
             serialPortArduino.WriteTimeout = 1000;
+
+            // Initialiseer timerOefening4
+            timerOefening4 = new System.Windows.Forms.Timer();
+            timerOefening4.Interval = 1000;
+            timerOefening4.Tick += timerOefening4_Tick;
+            timerOefening4.Enabled = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -258,6 +265,16 @@ namespace SerialCommunication
                     timerOefening3.Enabled = false;
                     this.Text = "BZL seriële communicatie Tobias Vangermeersch [Timer OFF - Tab " + tabControl.SelectedIndex + "]";
                 }
+
+                // Enable/disable timerOefening4 based on tabPageOefening4 selection
+                if (tabControl.SelectedIndex == 4)
+                {
+                    timerOefening4.Enabled = true;
+                }
+                else
+                {
+                    timerOefening4.Enabled = false;
+                }
             }
             catch (Exception ex)
             {
@@ -330,6 +347,47 @@ namespace SerialCommunication
             catch (Exception ex)
             {
                 MessageBox.Show("Fout in timer: " + ex.Message, "Communicatiefout");
+            }
+        }
+
+        private void timerOefening4_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                // Controleer of er een seriële verbinding aanwezig is
+                if (!serialPortArduino.IsOpen)
+                {
+                    return;
+                }
+
+                // Verwijder alle voorgaande antwoorden van de Arduino
+                serialPortArduino.ReadExisting();
+                System.Threading.Thread.Sleep(50);
+
+                // Verstuur het commando om de waarde van analog0 op te vragen
+                serialPortArduino.WriteLine("get a0");
+                System.Threading.Thread.Sleep(150);
+
+                // Lees het antwoord uit en trim tot je enkel de waarde overhoudt
+                string response = serialPortArduino.ReadExisting().Trim();
+
+                if (response.Length > 0)
+                {
+                    // Haal alleen het getal uit het antwoord (laatste deel)
+                    string[] parts = response.Split(' ');
+                    string analogValue = parts[parts.Length - 1];
+
+                    // Schrijf dit antwoord naar de property Text van labelAnalog0
+                    labelAnalog0.Text = analogValue;
+                }
+                else
+                {
+                    labelAnalog0.Text = "Geen antwoord";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout in timerOefening4: " + ex.Message, "Communicatiefout");
             }
         }
     }
