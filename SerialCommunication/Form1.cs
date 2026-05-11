@@ -242,5 +242,95 @@ namespace SerialCommunication
                 MessageBox.Show("Fout bij verzenden commando: " + ex.Message, "Communicatiefout");
             }
         }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Enable timer only when tabPageOefening3 (index 3) is selected
+                if (tabControl.SelectedIndex == 3)
+                {
+                    timerOefening3.Enabled = true;
+                    this.Text = "BZL seriële communicatie Tobias Vangermeersch [Timer ON - Tab 3]";
+                }
+                else
+                {
+                    timerOefening3.Enabled = false;
+                    this.Text = "BZL seriële communicatie Tobias Vangermeersch [Timer OFF - Tab " + tabControl.SelectedIndex + "]";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout bij tab selectie: " + ex.Message, "Fout");
+            }
+        }
+
+        private void timerOefening3_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!serialPortArduino.IsOpen)
+                {
+                    return;
+                }
+
+                // Clear previous responses
+                serialPortArduino.ReadExisting();
+                System.Threading.Thread.Sleep(50);
+
+                // Query and update digital pin 5
+                serialPortArduino.WriteLine("get d5");
+                System.Threading.Thread.Sleep(150);
+                string response5 = serialPortArduino.ReadExisting().Trim();
+                if (response5.Length > 0)
+                {
+                    char lastChar = response5[response5.Length - 1];
+                    radioButtonDigital5.Checked = (lastChar == '1');
+                }
+                else
+                {
+                    // No response received
+                    radioButtonDigital5.Checked = false;
+                }
+
+                System.Threading.Thread.Sleep(50);
+
+                // Query and update digital pin 6
+                serialPortArduino.WriteLine("get d6");
+                System.Threading.Thread.Sleep(150);
+                string response6 = serialPortArduino.ReadExisting().Trim();
+                if (response6.Length > 0)
+                {
+                    char lastChar = response6[response6.Length - 1];
+                    radioButtonDigital6.Checked = (lastChar == '1');
+                }
+                else
+                {
+                    // No response received
+                    radioButtonDigital6.Checked = false;
+                }
+
+                System.Threading.Thread.Sleep(50);
+
+                // Query and update digital pin 7
+                serialPortArduino.WriteLine("get d7");
+                System.Threading.Thread.Sleep(150);
+                string response7 = serialPortArduino.ReadExisting().Trim();
+                if (response7.Length > 0)
+                {
+                    char lastChar = response7[response7.Length - 1];
+                    radioButtonDigital7.Checked = (lastChar == '1');
+                }
+                else
+                {
+                    // No response received
+                    radioButtonDigital7.Checked = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout in timer: " + ex.Message, "Communicatiefout");
+            }
+        }
     }
 }
