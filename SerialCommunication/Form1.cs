@@ -16,6 +16,7 @@ namespace SerialCommunication
     {
         private SerialPort serialPortArduino;
         private System.Windows.Forms.Timer timerOefening4;
+        private System.Windows.Forms.Timer timerOefening5;
 
         public Form1()
         {
@@ -29,6 +30,12 @@ namespace SerialCommunication
             timerOefening4.Interval = 1000;
             timerOefening4.Tick += timerOefening4_Tick;
             timerOefening4.Enabled = false;
+
+            // Initialiseer timerOefening5
+            timerOefening5 = new System.Windows.Forms.Timer();
+            timerOefening5.Interval = 1000;
+            timerOefening5.Tick += timerOefening5_Tick;
+            timerOefening5.Enabled = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -275,6 +282,16 @@ namespace SerialCommunication
                 {
                     timerOefening4.Enabled = false;
                 }
+
+                // Enable/disable timerOefening5 based on tabPageOefening5 selection
+                if (tabControl.SelectedIndex == 5)
+                {
+                    timerOefening5.Enabled = true;
+                }
+                else
+                {
+                    timerOefening5.Enabled = false;
+                }
             }
             catch (Exception ex)
             {
@@ -306,7 +323,6 @@ namespace SerialCommunication
                 }
                 else
                 {
-                    // No response received
                     radioButtonDigital5.Checked = false;
                 }
 
@@ -323,7 +339,6 @@ namespace SerialCommunication
                 }
                 else
                 {
-                    // No response received
                     radioButtonDigital6.Checked = false;
                 }
 
@@ -340,7 +355,6 @@ namespace SerialCommunication
                 }
                 else
                 {
-                    // No response received
                     radioButtonDigital7.Checked = false;
                 }
             }
@@ -388,6 +402,102 @@ namespace SerialCommunication
             catch (Exception ex)
             {
                 MessageBox.Show("Fout in timerOefening4: " + ex.Message, "Communicatiefout");
+            }
+        }
+
+        private void timerOefening5_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                // Controleer of er een seriële verbinding aanwezig is
+                if (!serialPortArduino.IsOpen)
+                {
+                    return;
+                }
+
+                // Verwijder alle voorgaande antwoorden van de Arduino
+                serialPortArduino.ReadExisting();
+                System.Threading.Thread.Sleep(50);
+
+                // ===== GEWENSTE TEMPERATUUR (Analoge pin 0) =====
+                // Lees de waarde van analoge pin 0 uit
+                serialPortArduino.WriteLine("get a0");
+                System.Threading.Thread.Sleep(150);
+                string response0 = serialPortArduino.ReadExisting().Trim();
+                double gewensteTemp = 0.0;
+
+                if (response0.Length > 0)
+                {
+                    string[] parts0 = response0.Split(' ');
+                    if (int.TryParse(parts0[parts0.Length - 1], out int analog0Value))
+                    {
+                        // Herschaal: 0 .. 1023 → 5 .. 45 °C
+                        // Richtingscoëfficiënt: (45 - 5) / (1023 - 0) = 40 / 1023 ≈ 0.03909
+                        // Offset: 5
+                        double richtingsCoeff0 = (45.0 - 5.0) / 1023.0;
+                        double offset0 = 5.0;
+                        gewensteTemp = (analog0Value * richtingsCoeff0) + offset0;
+                    }
+                }
+
+                // Visualiseer gewenste temperatuur (afgerond op 1 decimaal)
+                labelGewensteTemp.Text = gewensteTemp.ToString("F1") + " °C";
+
+                System.Threading.Thread.Sleep(50);
+
+                // ===== HUIDIGE TEMPERATUUR (Analoge pin 1) =====
+                // Lees de waarde van analoge pin 1 uit
+                serialPortArduino.WriteLine("get a1");
+                System.Threading.Thread.Sleep(150);
+                string response1 = serialPortArduino.ReadExisting().Trim();
+                double huidigeTemp = 0.0;
+
+                if (response1.Length > 0)
+                {
+                    string[] parts1 = response1.Split(' ');
+                    if (int.TryParse(parts1[parts1.Length - 1], out int analog1Value))
+                    {
+                        // Herschaal: 0 .. 1023 → 0 .. 500 °C
+                        // Richtingscoëfficiënt: (500 - 0) / (1023 - 0) = 500 / 1023 ≈ 0.48877
+                        // Offset: 0
+                        double richtingsCoeff1 = 500.0 / 1023.0;
+                        double offset1 = 0.0;
+                        huidigeTemp = (analog1Value * richtingsCoeff1) + offset1;
+                    }
+                }
+
+                // Visualiseer huidige temperatuur (afgerond op 1 decimaal)
+                labelHuidigeTemp.Text = huidigeTemp.ToString("F1") + " °C";
+
+                System.Threading.Thread.Sleep(50);
+
+                // ===== LED AANSTUREN (Digitale pin 2) =====
+                // De LED brandt wanneer huidige temperatuur lager is dan gewenste temperatuur
+                System.Threading.Thread.Sleep(50);
+
+                try
+                {
+                    if (huidigeTemp < gewensteTemp)
+                    {
+                        // LED aan
+                        serialPortArduino.WriteLine("set d2 high");
+                        System.Threading.Thread.Sleep(50);
+                    }
+                    else
+                    {
+                        // LED uit
+                        serialPortArduino.WriteLine("set d2 low");
+                        System.Threading.Thread.Sleep(50);
+                    }
+                }
+                catch (Exception ledEx)
+                {
+                    MessageBox.Show("LED Fout: " + ledEx.Message, "LED Communicatiefout");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Fout in timerOefening5: " + ex.Message, "Communicatiefout");
             }
         }
     }
